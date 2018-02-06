@@ -1,0 +1,83 @@
+﻿@{
+    Layout = null;
+}
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <title>Device list</title>
+    <script src="~/Scripts/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/angular.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/bootstrap.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/Module.js" type="text/javascript"></script>
+    <link href="~/Content/bootstrap.min.css" type="text/css" rel="stylesheet" />
+
+    <title>Andriy Klym [andriyklymc@gmail.com]</title>
+</head>
+
+<body ng-app="ListDev" id="body">
+    <div class="container-fluid">
+        <div ng-controller="listCtrl">
+            <h2>Andriy Klym [andriyklymc@gmail.com]</h2>
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th style="display:none;">Id</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="items in devicesData">
+                            <td hidden="hidden">{{items.Id}}</td>
+                            <td>{{items.Name}}</td>
+                            <td>{{items.Category}}</td>
+                            <td>
+                                <button class="btn btn-primary" ng-model="$scope.Device" ng-click="Edit(devicesData[$index])">Edit</button>
+                                <button class="btn btn-danger" ng-click="Delete($index)">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12">
+                <div ng-show="Device.Id != ''">
+                    <div><h2>Update</h2></div>
+                    <div hidden="hidden">
+                        <label for="id">Id</label>
+                        <input class="form-control" type="text" data-ng-model="Device.Id" />
+                    </div>
+                    <div>
+                        <label for="name">Name</label>
+                        <input class="form-control" type="text" data-ng-model="Device.Name" />
+                    </div>
+                    <div>
+                        <label for="category">Category</label>
+                        <input class="form-control" type="text" data-ng-model="Device.Category" />
+                    </div>
+                    <div>
+                        <button class="btn btn-success" data-ng-click="Update()">Update</button>
+                        <button class="btn btn-warning" data-ng-click="Cancel()">Cancel</button>
+                    </div>
+                </div>
+
+                <div ng-hide="Device.Id != ''">
+                    <div><h2>Add new</h2></div>
+                    <div>
+                        <label for="name">Name</label>
+                        <input class="form-control" type="text" data-ng-model="Device.Name" />
+                    </div>
+                    <div>
+                        <label for="category">Category</label>
+                        <input class="form-control" type="text" data-ng-model="Device.Category" />
+                    </div>
+                    <div>
+                        <button class="btn btn-success" data-ng-click="Save()">Save</button>
+                        <button class="btn btn-warning" data-ng-click="Cancel()">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
