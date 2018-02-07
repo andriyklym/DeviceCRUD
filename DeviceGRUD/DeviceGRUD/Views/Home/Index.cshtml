@@ -3,13 +3,16 @@
 }
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3">
     <title>Device list</title>
     <script src="~/Scripts/jquery-1.10.2.min.js" type="text/javascript"></script>
     <script src="~/Scripts/angular.min.js" type="text/javascript"></script>
     <script src="~/Scripts/bootstrap.min.js" type="text/javascript"></script>
     <script src="~/Scripts/Module.js" type="text/javascript"></script>
+    <script data-require="ui-bootstrap" data-semver="0.12.1" src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.12.1.min.js"></script>
     <link href="~/Content/bootstrap.min.css" type="text/css" rel="stylesheet" />
+    <link href="~/Content/Site.css" type="text/css" rel="stylesheet" />
+    <script src="~/Scripts/Tabs.js" type="text/javascript"></script>
 
     <title>Andriy Klym [andriyklymc@gmail.com]</title>
 </head>
@@ -17,67 +20,83 @@
 <body ng-app="ListDev" id="body">
     <div class="container-fluid">
         <div ng-controller="listCtrl">
-            <h2>Andriy Klym [andriyklymc@gmail.com]</h2>
-            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12">
-                <table class="table table-hover">
+            <div class="tab">
+                <button class="tablinks" onclick="openTab(event, 'List')" id="defaultOpen">List</button>
+                <button class="tablinks" onclick="openTab(event, 'Stat')">Statistic</button>
+            </div>
+            <div id="List" class="tabcontent">
+                <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <div class="formAdd" ng-show="Device.Id != ''">
+                        <div><h2>Update</h2></div>
+                        <div hidden="hidden">
+                            <label for="id">Id</label>
+                            <input class="form-control" type="text" data-ng-model="Device.Id" />
+                        </div>
+
+                        <input class="form-control formInput" type="text" data-ng-model="Device.Name" />
+                        <input class="form-control formInput" type="text" data-ng-model="Device.Category" />
+                        <button class="btn btn-success formButton" data-ng-click="Update()">Update</button>
+                        <button class="btn btn-warning formButton" data-ng-click="Cancel()">Cancel</button>
+
+
+                    </div>
+
+                    <div class="formAdd" ng-hide="Device.Id != ''">
+                        <div><h2>Add new</h2></div>
+
+                        <input class="form-control formInput" type="text" placeholder="Name" required data-ng-model="Device.Name" />
+                        <input class="form-control formInput" type="text" placeholder="Category" required data-ng-model="Device.Category" />
+                        <button class="btn btn-success formButton" data-ng-click="Save()">Save</button>
+                        <button class="btn btn-warning formButton" data-ng-click="Cancel()">Clear</button>
+
+                    </div>
+                </div><br />
+                <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="display:none;">Id</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="items in devicesData.slice((currentPage-1) * numPerPage, currentPage * numPerPage)">
+                                <td hidden="hidden">{{items.Id}}</td>
+                                <td>{{items.Name}}</td>
+                                <td>{{items.Category}}</td>
+                                <td>
+                                    <button class="btn btn-primary" ng-model="$scope.Device" ng-click="Edit($index)">Edit</button>
+                                    <button class="btn btn-danger" ng-click="Delete($index)">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pagination ng-model="currentPage" total-items="devicesData.length" items-per-page="numPerPage" max-size="maxSize" boundary-links="true">
+                </div>
+            </div>
+            <div id="Stat" class="tabcontent">
+                <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th style="display:none;">Id</th>
-                            <th>Name</th>
                             <th>Category</th>
-                            <th>Actions</th>
+                            <th>Count</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="items in devicesData">
-                            <td hidden="hidden">{{items.Id}}</td>
-                            <td>{{items.Name}}</td>
-                            <td>{{items.Category}}</td>
-                            <td>
-                                <button class="btn btn-primary" ng-model="$scope.Device" ng-click="Edit(devicesData[$index])">Edit</button>
-                                <button class="btn btn-danger" ng-click="Delete($index)">Delete</button>
-                            </td>
+                        <tr ng-repeat="stat in dict.slice((sCurrentPage-1)*sNumPerPage, sCurrentPage*sNumPerPage)">
+                            <td>{{stat.key}}</td>
+                            <td>{{stat.value}}</td>
                         </tr>
                     </tbody>
                 </table>
-            </div>
-            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12">
-                <div ng-show="Device.Id != ''">
-                    <div><h2>Update</h2></div>
-                    <div hidden="hidden">
-                        <label for="id">Id</label>
-                        <input class="form-control" type="text" data-ng-model="Device.Id" />
-                    </div>
-                    <div>
-                        <label for="name">Name</label>
-                        <input class="form-control" type="text" data-ng-model="Device.Name" />
-                    </div>
-                    <div>
-                        <label for="category">Category</label>
-                        <input class="form-control" type="text" data-ng-model="Device.Category" />
-                    </div>
-                    <div>
-                        <button class="btn btn-success" data-ng-click="Update()">Update</button>
-                        <button class="btn btn-warning" data-ng-click="Cancel()">Cancel</button>
-                    </div>
-                </div>
-
-                <div ng-hide="Device.Id != ''">
-                    <div><h2>Add new</h2></div>
-                    <div>
-                        <label for="name">Name</label>
-                        <input class="form-control" type="text" data-ng-model="Device.Name" />
-                    </div>
-                    <div>
-                        <label for="category">Category</label>
-                        <input class="form-control" type="text" data-ng-model="Device.Category" />
-                    </div>
-                    <div>
-                        <button class="btn btn-success" data-ng-click="Save()">Save</button>
-                        <button class="btn btn-warning" data-ng-click="Cancel()">Clear</button>
-                    </div>
-                </div>
+                <pagination ng-model="sCurrentPage" total-items="dict.length" items-per-page="sNumPerPage" max-size="sMaxSize" boundary-links="true">
             </div>
         </div>
-    </div>
+    </div>         
+    <div id="snackbar"></div>
+    <script>
+        document.getElementById("defaultOpen").click();
+    </script>
 </body>
